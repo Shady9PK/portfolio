@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recruitment Mind Map · Shady Mahmoud Abdallah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f3ee; --paper:#fffdf9; --ink:#1d1b18; --muted:#6b655c; --line:#d9d2c6;
+    --star:#c2410c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1320px;margin:0 auto;padding:48px 28px 64px}
+  header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:36px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-family:"Instrument Serif",serif;font-weight:400;font-size:clamp(40px,6vw,68px);line-height:1;margin:10px 0 12px;letter-spacing:-.01em}
+  h1 em{color:var(--star)}
+  .lede{max-width:620px;color:var(--muted);margin:0;font-size:16px}
+  .controls{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+  .toggle{display:inline-flex;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:8px 14px 8px 8px;cursor:pointer;font:inherit;font-weight:500;color:var(--ink)}
+  .toggle .knob{width:34px;height:20px;border-radius:999px;background:var(--line);position:relative;transition:.2s}
+  .toggle .knob::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+  .toggle[aria-pressed="true"] .knob{background:var(--star)}
+  .toggle[aria-pressed="true"] .knob::after{left:16px}
+  .legend{font-size:13px;color:var(--muted)}
+  .legend b{color:var(--star)}
+
+  .map{position:relative;display:grid;grid-template-columns:1fr minmax(220px,260px) 1fr;gap:28px 64px;align-items:center}
+  .col{display:flex;flex-direction:column;gap:16px;position:relative;z-index:2}
+  svg.links{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible}
+  svg.links path{fill:none;stroke-width:2;opacity:.55;transition:opacity .25s,stroke-width .25s}
+  svg.links path.hot{opacity:1;stroke-width:3}
+  svg.links path.dim{opacity:.12}
+
+  .hub{position:sticky;top:30px;z-index:2;align-self:center;background:var(--ink);color:#fbf7f0;border-radius:28px;padding:30px 24px;text-align:center;box-shadow:0 20px 50px -20px rgba(29,27,24,.5)}
+  .hub .eyebrow{color:#bdb4a6}
+  .hub h2{font-family:"Instrument Serif",serif;font-weight:400;font-size:40px;line-height:1;margin:10px 0 14px}
+  .hub p{margin:0;font-size:13.5px;color:#d8d0c3}
+  .hub .flow{margin-top:18px;display:flex;flex-wrap:wrap;justify-content:center;gap:5px;font-size:11.5px}
+  .hub .flow span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:3px 8px;border-radius:999px}
+
+  .node{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:16px;padding:14px 16px 14px;cursor:pointer;transition:transform .2s,box-shadow .2s,opacity .25s;outline:none}
+  .node:hover,.node:focus-visible,.node.open{box-shadow:0 12px 30px -16px rgba(29,27,24,.35);transform:translateY(-1px)}
+  .node:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 40%,transparent)}
+  .node .top{display:flex;align-items:baseline;gap:10px}
+  .node .num{font-family:"Instrument Serif",serif;font-size:22px;color:var(--c);line-height:1;min-width:24px}
+  .node h3{margin:0;font-size:16px;font-weight:600;flex:1}
+  .node .star{color:var(--star);font-size:12px;font-weight:600;white-space:nowrap}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .chip{font-size:12.5px;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--c) 10%,#fff);color:color-mix(in srgb,var(--c) 70%,#000);border:1px solid color-mix(in srgb,var(--c) 22%,transparent)}
+  .detail{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+  .detail > div{overflow:hidden}
+  .node.open .detail{grid-template-rows:1fr}
+  .detail p{margin:12px 0 0;font-size:13.5px;color:var(--muted)}
+  .detail .mine{margin-top:8px;font-size:13.5px;color:var(--ink);background:color-mix(in srgb,var(--star) 8%,#fff);border:1px dashed color-mix(in srgb,var(--star) 40%,transparent);border-radius:10px;padding:8px 10px}
+  .detail .mine b{color:var(--star)}
+  .map.focus .node:not(.has-exp){opacity:.38}
+
+  footer{margin-top:44px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:13px}
+
+  @media (max-width:900px){
+    .wrap{padding:32px 16px 48px}
+    header{flex-direction:column;align-items:flex-start}
+    .controls{align-items:flex-start}
+    .map{grid-template-columns:1fr;gap:16px}
+    .hub{position:relative;top:0;order:-1}
+    svg.links{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  .back{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;font-size:13.5px;font-weight:600;color:var(--ink);text-decoration:none;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:8px 14px;transition:transform .2s,border-color .2s}
+  .back:hover{transform:translateX(-2px);border-color:var(--ink)}
+  .pbtn{margin-top:10px;display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:13px;font-weight:600;color:#fff;background:var(--c);border:0;border-radius:999px;padding:8px 14px;cursor:pointer}
+  .pbtn:hover{filter:brightness(1.08)}
+  .modal{position:fixed;inset:0;background:rgba(29,27,24,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+  .modal.show{display:flex}
+  .modal .box{background:var(--paper);border-radius:20px;max-width:760px;width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+  .modal .head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line)}
+  .modal .head h4{margin:0;font-family:"Instrument Serif",serif;font-weight:400;font-size:26px}
+  .modal .head small{display:block;color:var(--muted);font-size:12.5px}
+  .modal pre{margin:0;padding:20px 22px;overflow:auto;white-space:pre-wrap;font:13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink)}
+  .modal pre mark{background:color-mix(in srgb,#0d9488 16%,#fff);color:#0f5e57;border-radius:4px;padding:0 3px}
+  .modal .acts{display:flex;gap:8px}
+  .modal .acts button{font:inherit;font-size:13px;font-weight:600;border-radius:999px;padding:8px 14px;cursor:pointer;border:1px solid var(--line);background:#fff}
+  .modal .acts .copy{background:var(--ink);color:#fff;border-color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Back to main page</a>
+  <header>
+    <div>
+      <div class="eyebrow">Shady Mahmoud Abdallah · Recruiter · Cairo</div>
+      <h1>Recruitment, <em>mapped</em>.</h1>
+      <p class="lede">How I see end‑to‑end talent acquisition: twelve connected areas, from the first intake call with a hiring manager to the KPIs that prove the hire worked. Click any branch to open it.</p>
+    </div>
+    <div class="controls">
+      <button class="toggle" id="expToggle" aria-pressed="false"><span class="knob"></span>Show my hands‑on experience</button>
+      <div class="legend"><b>★</b> I have worked hands‑on in all 12 areas</div>
+    </div>
+  </header>
+
+  <div class="map" id="map">
+    <svg class="links" id="links" aria-hidden="true"></svg>
+    <div class="col" id="left"></div>
+    <div class="hub" id="hub">
+      <div class="eyebrow">The core</div>
+      <h2>Talent Acquisition</h2>
+      <p>Finding, attracting and hiring the right people, fast and fairly, while giving every candidate a good experience.</p>
+      <div class="flow"><span>Need</span><span>Attract</span><span>Source</span><span>Screen</span><span>Interview</span><span>Offer</span><span>Onboard</span><span>Measure</span></div>
+    </div>
+    <div class="col" id="right"></div>
+  </div>
+
+  <footer>
+    <span>Full‑cycle recruitment · Mass hiring · Technical headhunting · Client delivery</span>
+    <span>Built as a companion to my CV</span>
+  </footer>
+</div>
+
+<div class="modal" id="pmodal" role="dialog" aria-modal="true" aria-labelledby="ptitle">
+  <div class="box">
+    <div class="head"><div><h4 id="ptitle">My CV‑blinding prompt</h4><small>The prompt I give Claude to rebuild CVs as blind, structured profiles. Client and company names are replaced with placeholders.</small></div>
+      <div class="acts"><button class="copy" id="pcopy">Copy</button><button id="pclose">Close</button></div></div>
+    <pre id="ptext"></pre>
+  </div>
+</div>
+<script>
+const branches = [
+  { t:"Workforce Planning & Intake", c:"#2563eb",
+    chips:["Headcount planning","Intake meeting","Must‑have vs nice‑to‑have","Salary benchmarking","Hiring timeline"],
+    d:"Every good hire starts before the job is posted: agreeing with the hiring manager on what success looks like, the budget, and a realistic timeline.",
+    mine:"Ran intake meetings with hiring managers and clients to define requirements, must‑haves and timelines, and planned hiring for fast‑growing client accounts." },
+  { t:"Employer Branding & Job Ads", c:"#7c3aed",
+    chips:["Employer value proposition","Clear, inclusive JDs","LinkedIn · Wuzzuf · Bayt · Indeed","Tech talent: GitHub","Tech talent: Trailhead","Tech talent: Hack The Box","Social campaigns","Careers page"],
+    d:"Candidates choose employers too. A clear job ad and a credible employer story decide who applies in the first place. For tech roles, the company has to show up where engineers already spend time: developers on GitHub, Salesforce professionals on Trailhead, and cybersecurity talent on Hack The Box.",
+    mine:"Wrote and published job ads across job boards and social channels, and reached tech talent on GitHub, Trailhead and Hack The Box." },
+  { t:"Sourcing", c:"#0891b2",
+    chips:["Active & passive talent","Boolean & X‑ray search","Headhunting","Referrals","Talent pools","Job fairs & universities"],
+    d:"Going beyond inbound applications to find people who are not actively looking, especially for niche and technical roles.",
+    mine:"Headhunted technical talent alongside hiring managers, and sourced multilingual interpreters from all over the world." },
+  { t:"Screening", c:"#0d9488",
+    chips:["CV review vs criteria","ATS keyword filtering","Phone screens","Knock‑out questions","Language assessment","Blind CVs (anonymized & structured)"],
+    d:"Turning a large applicant pool into a focused shortlist, consistently and quickly, without losing strong but unconventional profiles.",
+    prompt:true,
+    mine:"Screened and assessed multilingual interpreter candidates across many languages and countries, then rebuilt shortlisted CVs into blind, structured profiles in one standard format, so clients could compare candidates fairly on skills and experience." },
+  { t:"Interviewing & Assessment", c:"#16a34a",
+    chips:["Competency‑based (STAR)","Structured scorecards","Technical tests","Panel interviews","Reducing bias"],
+    d:"Structured interviews with agreed criteria give fairer, more predictive decisions than gut feeling.",
+    mine:"Ran interviews as part of the full hiring cycle; my engineering background helps me assess technical candidates." },
+  { t:"Selection & Offer", c:"#65a30d",
+    chips:["Debrief & calibration","Reference checks","Background checks","Offer negotiation","Closing & counter‑offers"],
+    d:"The final mile: aligning the panel, verifying the candidate, and closing an offer that both sides are happy with.",
+    mine:"Aligned final decisions with hiring managers and clients, ran reference checks, and negotiated and closed offers." },
+  { t:"Onboarding", c:"#ca8a04",
+    chips:["Pre‑boarding documents","Day‑one orientation","Training & buddy","30‑60‑90 check‑ins","Early‑attrition watch"],
+    d:"A hire isn't finished at signature. Good onboarding protects the investment and reduces early leavers.",
+    mine:"Handled onboarding as part of running the full cycle for new hires." },
+  { t:"High‑Volume / Mass Hiring", c:"#ea580c",
+    chips:["Hiring campaigns","Assessment days","Group interviews","Templates & automation","Show‑up & drop‑off rates"],
+    d:"Hiring dozens or hundreds of people at once needs process, forecasting and a tight team rhythm.",
+    mine:"Led mass‑hiring campaigns during rapid client growth at an international BPO." },
+  { t:"Metrics & KPIs", c:"#dc2626",
+    chips:["Time‑to‑fill","Cost‑per‑hire","Quality of hire","Offer acceptance rate","Source effectiveness","SLA compliance"],
+    d:"What gets measured gets improved: funnel data shows where candidates drop off and which channels actually deliver.",
+    mine:"Delivered candidates within client SLA and KPI targets." },
+  { t:"Stakeholders & Clients", c:"#db2777",
+    chips:["Hiring managers","Client requirements","Weekly reporting","Expectation setting","Team coordination"],
+    d:"Recruitment is a service. Clear communication with managers and clients keeps hiring aligned with the business.",
+    mine:"Worked directly with clients in the US and the Gulf, and coordinated a recruitment team." },
+  { t:"Tools & Technology", c:"#9333ea",
+    chips:["ATS (Workday, Greenhouse, Lever…)","LinkedIn Recruiter","Excel dashboards","Scheduling tools","AI‑assisted sourcing"],
+    d:"The right stack saves hours per hire: tracking every candidate, automating admin and keeping data clean.",
+    mine:"Managed candidate pipelines in an ATS, sourced on LinkedIn, and tracked hiring progress and KPIs in Excel reports." },
+  { t:"Candidate Experience & Compliance", c:"#475569",
+    chips:["Timely communication","Feedback to candidates","Labour law & contracts","Data privacy","Equal opportunity"],
+    d:"Every candidate, hired or not, leaves with an impression of the company. Fair, lawful, respectful process is non‑negotiable.",
+    mine:"Kept candidates informed at every stage, gave feedback after decisions, and handled candidate data confidentially." }
+];
+
+const left = document.getElementById('left'), right = document.getElementById('right');
+const nodes = [];
+branches.forEach((b,i)=>{
+  const el = document.createElement('div');
+  el.className = 'node' + (b.mine ? ' has-exp' : '');
+  el.style.setProperty('--c', b.c);
+  el.tabIndex = 0;
+  el.setAttribute('role','button');
+  el.setAttribute('aria-expanded','false');
+  el.innerHTML = `
+    <div class="top"><span class="num">${String(i+1).padStart(2,'0')}</span><h3>${b.t}</h3>${b.mine?'<span class="star">★ Hands‑on</span>':''}</div>
+    <div class="chips">${b.chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+    <div class="detail"><div><p>${b.d}</p>${b.mine?`<div class="mine"><b>★ My experience:</b> ${b.mine}</div>`:''}${b.prompt?`<button class="pbtn" data-prompt>View my CV‑blinding prompt →</button>`:''}</div></div>`;
+  const toggle = ()=>{ const o = el.classList.toggle('open'); el.setAttribute('aria-expanded', o); requestAnimationFrame(drawSoon); };
+  el.addEventListener('click', toggle);
+  el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }});
+  el.addEventListener('mouseenter', ()=>hot(i,true));
+  el.addEventListener('mouseleave', ()=>hot(i,false));
+  (i % 2 === 0 ? left : right).appendChild(el);
+  el.dataset.side = i % 2 === 0 ? 'L' : 'R';
+  nodes.push(el);
+});
+
+const svg = document.getElementById('links'), map = document.getElementById('map'), hub = document.getElementById('hub');
+let paths = [];
+function draw(){
+  const m = map.getBoundingClientRect(), h = hub.getBoundingClientRect();
+  if (getComputedStyle(svg).display === 'none') return;
+  svg.setAttribute('viewBox', `0 0 ${m.width} ${m.height}`);
+  svg.innerHTML = '';
+  paths = nodes.map((n,i)=>{
+    const r = n.getBoundingClientRect();
+    const L = n.dataset.side === 'L';
+    const x1 = (L ? h.left : h.right) - m.left;
+    const y1 = Math.min(Math.max(r.top + r.height/2, h.top + 30), h.bottom - 30) - m.top;
+    const x2 = (L ? r.right : r.left) - m.left;
+    const y2 = r.top + Math.min(r.height/2, 34) - m.top;
+    const dx = (x2 - x1) * 0.55;
+    const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d', `M${x1},${y1} C${x1+dx},${y1} ${x2-dx},${y2} ${x2},${y2}`);
+    p.setAttribute('stroke', branches[i].c);
+    svg.appendChild(p);
+    return p;
+  });
+}
+let raf; function drawSoon(){ cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }
+function hot(i,on){ paths.forEach((p,j)=>{ p.classList.toggle('hot', on && j===i); p.classList.toggle('dim', on && j!==i); }); }
+
+new ResizeObserver(drawSoon).observe(map);
+nodes.forEach(n=>{ new ResizeObserver(drawSoon).observe(n); n.addEventListener('transitionend', drawSoon); });
+window.addEventListener('scroll', drawSoon, {passive:true});
+window.addEventListener('resize', drawSoon);
+document.fonts && document.fonts.ready.then(drawSoon);
+draw();
+
+const tg = document.getElementById('expToggle');
+tg.addEventListener('click', ()=>{
+  const on = tg.getAttribute('aria-pressed') !== 'true';
+  tg.setAttribute('aria-pressed', on);
+  map.classList.toggle('focus', on);
+  nodes.forEach(n=>{ if(n.classList.contains('has-exp')){ n.classList.toggle('open', on); n.setAttribute('aria-expanded', on); } });
+  drawSoon();
+});
+const PROMPT = "You are a recruitment specialist at [Company], preparing candidate profiles for [Client] for the role of [Job Title].\n\nRebuild the attached CV as a BLIND CV using the structure below.\n\n1. Remove all personal identifiers: name, photo, phone, email, address, LinkedIn and social links, date of birth, age, gender, marital status, nationality and religion.\n2. Replace the candidate's name with this Candidate ID: [Candidate ID].\n\nUse this exact structure:\n- Candidate ID | Target role: [Job Title]\n- Professional summary: 3–4 lines, tailored to [Job Title]\n- Key skills that match the job requirements\n- Languages and proficiency levels\n- Work experience (most recent first): job title, industry, dates, 3–4 achievement bullets\n- Education and certifications\n- Location (city/country only), availability and notice period\n- Recruiter notes: how the candidate meets the must-have requirements for [Job Title]\n\nRules:\n- Do not invent or exaggerate anything. Keep every fact exactly as in the CV.\n- If information is missing, write \"Not provided\".\n- Clear, professional English, and the same format for every candidate so [Client] can compare them fairly.\n- Add a header with the [Company] logo placeholder and the line \"Confidential candidate profile\".";
+const pm=document.getElementById('pmodal'), pt=document.getElementById('ptext');
+pt.innerHTML = PROMPT.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\[[^\]]+\]/g, m=>`<mark>${m}</mark>`);
+let lastFocus=null;
+function openP(e){ e.stopPropagation(); lastFocus=e.currentTarget; pm.classList.add('show'); document.getElementById('pclose').focus(); }
+function closeP(){ pm.classList.remove('show'); lastFocus && lastFocus.focus(); }
+document.querySelectorAll('[data-prompt]').forEach(b=>{ b.addEventListener('click',openP); b.addEventListener('keydown',e=>e.stopPropagation()); });
+document.getElementById('pclose').addEventListener('click',closeP);
+pm.addEventListener('click',e=>{ if(e.target===pm) closeP(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && pm.classList.contains('show')) closeP(); });
+document.getElementById('pcopy').addEventListener('click',async e=>{
+  const btn=e.currentTarget;
+  try{ await navigator.clipboard.writeText(PROMPT); btn.textContent='Copied ✓'; }
+  catch(err){ const r=document.createRange(); r.selectNodeContents(pt); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); btn.textContent='Selected, press Ctrl+C'; }
+  setTimeout(()=>btn.textContent='Copy',2200);
+});
+</script>
+</body>
+</html>
